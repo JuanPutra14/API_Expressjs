@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+    <div class="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-6">
+        <h1 class="text-2xl font-bold mb-4 text-center">Dashboard Admin</h1>
+
+       
+        <form action="/admin/dashboard/search" method="get" class="mb-4 flex gap-2">
+            <input type="text" name="query" id="query" required class="border p-2 rounded w-full" placeholder="Search items...">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Search
+            </button>
+        </form>
+        
+        <% if (error) { %>
+            <p class="text-red-500"><%= error %></p>
+        <% } %>
+
+        
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse border border-gray-300 bg-white rounded-lg">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="border p-2">ID</th>
+                        <th class="border p-2">Name</th>
+                        <th class="border p-2">Description</th>
+                        <th class="border p-2">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (data.length > 0) { %>
+                        <% data.forEach(item => { %>
+                            <tr class="hover:bg-gray-100">
+                                <td class="border p-2 text-center"><%= item.id %></td>
+                                <td class="border p-2"><%= item.name %></td>
+                                <td class="border p-2"><%= item.description %></td>
+                                <td class="border p-2">
+                                    <form action="/admin/update/<%= item.id %>" method="post" class="flex gap-2">
+                                        <input type="text" name="name" value="<%= item.name %>" required class="border p-1 rounded w-40">
+                                        <input type="text" name="description" value="<%= item.description %>" required class="border p-1 rounded w-40">
+                                        <button type="submit" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+                                            UPDATE
+                                        </button>
+                                    </form>
+                                    <form action="/admin/delete/<%= item.id %>" method="post"> 
+                                        <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                                            DELETE
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="4" class="text-center text-gray-500 p-4">No items found</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex justify-center items-center gap-2 mt-4">
+            <% if (currentPage > 1) { %>
+                <a href="/admin/dashboard?page=<%= currentPage - 1 %>" class="px-3 py-1 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">
+                    Previous
+                </a>
+            <% } %>
+
+            <span class="px-4 py-2 bg-blue-500 text-white rounded"><%= currentPage %> / <%= totalPages %></span>
+
+            <% if (currentPage < totalPages) { %>
+                <a href="/admin/dashboard?page=<%= currentPage + 1 %>" class="px-3 py-1 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">
+                    Next
+                </a>
+            <% } %>
+        </div>
+
+        
+        <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+            <h2 class="text-lg font-semibold mb-2">Add Item</h2>
+            <form action="/admin/add-items" method="post" class="flex flex-col gap-3">
+                <input type="text" name="name" required placeholder="Item Name" class="border p-2 rounded">
+                <input type="text" name="description" required placeholder="Description" class="border p-2 rounded">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Submit
+                </button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
